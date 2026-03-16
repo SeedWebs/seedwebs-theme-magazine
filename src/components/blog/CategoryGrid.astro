@@ -1,0 +1,23 @@
+---
+import type { Category } from '@/lib/types'
+import { categoryUrl } from '@/lib/utils'
+
+interface Props {
+  categories: Category[]
+}
+
+const { categories } = Astro.props
+---
+
+<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+  {categories.map(cat => (
+    <a
+      href={categoryUrl(cat.slug)}
+      class="group rounded-xl border border-gray-200 bg-white px-4 py-4 text-center transition-all hover:border-primary hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-primary"
+    >
+      <span class="text-sm font-semibold text-gray-900 group-hover:text-primary dark:text-white dark:group-hover:text-primary">
+        {cat.name}
+      </span>
+    </a>
+  ))}
+</div>

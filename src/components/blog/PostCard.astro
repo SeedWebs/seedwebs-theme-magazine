@@ -1,0 +1,55 @@
+---
+import ResponsiveImage from '@/components/ui/ResponsiveImage.astro'
+import FormattedDate from '@/components/ui/FormattedDate.astro'
+import CategoryBadge from '@/components/ui/CategoryBadge.astro'
+import type { Post } from '@/lib/types'
+import { postUrl, excerpt } from '@/lib/utils'
+
+interface Props {
+  post: Post
+}
+
+const { post } = Astro.props
+const url = postUrl(post.slug)
+const desc = post.seo_description || excerpt(post.body)
+---
+
+<article class="group overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow hover:shadow-lg dark:border-gray-800 dark:bg-gray-900">
+  {/* Image */}
+  <a href={url} class="block overflow-hidden">
+    {post.featured_image ? (
+      <ResponsiveImage
+        src={post.featured_image}
+        srcMobile={post.featured_image_mobile}
+        alt={post.title}
+        class="aspect-[16/10] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      />
+    ) : (
+      <div class="aspect-[16/10] w-full bg-gray-100 dark:bg-gray-800" />
+    )}
+  </a>
+
+  {/* Content */}
+  <div class="p-4 md:p-5">
+    {/* Category + Date */}
+    <div class="mb-2 flex items-center gap-2">
+      {post.categories?.[0] && (
+        <CategoryBadge category={post.categories[0]} />
+      )}
+      <FormattedDate date={post.created_at} class="text-xs text-gray-500 dark:text-gray-400" />
+    </div>
+
+    {/* Title */}
+    <h2 class="mb-2 text-lg font-bold leading-tight">
+      <a href={url} class="text-gray-900 hover:text-primary dark:text-white dark:hover:text-primary">
+        {post.title}
+      </a>
+    </h2>
+
+    {/* Excerpt */}
+    <p class="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+      {desc}
+    </p>
+  </div>
+</article>

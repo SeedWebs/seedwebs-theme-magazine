@@ -1,0 +1,39 @@
+---
+import BlogLayout from '@/layouts/BlogLayout.astro'
+import PostGrid from '@/components/blog/PostGrid.astro'
+import Pagination from '@/components/layout/Pagination.astro'
+import { getPosts, getCategories, getTags } from '@/lib/api'
+
+export async function getStaticPaths() {
+  const categories = await getCategories()
+  return categories.map(cat => ({
+    params: { slug: cat.slug },
+    props: { category: cat },
+  }))
+}
+
+const { category } = Astro.props
+const { posts, meta } = await getPosts({ page: 1, category: category.slug })
+const [categories, tags] = await Promise.all([getCategories(), getTags()])
+const recentPosts = posts.slice(0, 5)
+---
+
+<BlogLayout
+  title={category.name}
+  description={`Posts in ${category.name}`}
+  recentPosts={recentPosts}
+  categories={categories}
+  tags={tags}
+>
+  <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
+    Category: <span class="text-primary">{category.name}</span>
+  </h1>
+  {posts.length > 0 ? (
+    <>
+      <PostGrid posts={posts} />
+      <Pagination currentPage={1} totalPages={meta.total_pages} basePath={`/category/${category.slug}`} />
+    </>
+  ) : (
+    <p class="text-gray-500 dark:text-gray-400">No posts found in this category.</p>
+  )}
+</BlogLayout>

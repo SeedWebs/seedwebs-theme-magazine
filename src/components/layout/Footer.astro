@@ -1,0 +1,21 @@
+---
+interface Props {
+  siteName: string
+}
+
+const { siteName } = Astro.props
+const year = new Date().getFullYear()
+---
+
+<footer class="border-t border-gray-200 bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+  <div class="mx-auto max-w-6xl px-4 py-8 md:py-12">
+    <div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        &copy; {year} {siteName}. All rights reserved.
+      </p>
+      <p class="text-sm text-gray-400 dark:text-gray-500">
+        Powered by <a href="https://seedwebs.app" class="underline hover:text-primary" target="_blank" rel="noopener">SeedWebs</a>
+      </p>
+    </div>
+  </div>
+</footer>

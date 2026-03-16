@@ -1,0 +1,45 @@
+---
+import SEOHead from '@/components/seo/SEOHead.astro'
+import Header from '@/components/layout/Header.astro'
+import Footer from '@/components/layout/Footer.astro'
+import { getSettings } from '@/lib/api'
+import type { SiteSettings } from '@/lib/types'
+import '@/styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+  image?: string | null
+  type?: 'website' | 'article'
+  publishedTime?: string
+}
+
+const settings = await getSettings()
+const { title, description, image, type, publishedTime } = Astro.props
+const pageTitle = title ? `${title} — ${settings.site_name}` : settings.site_name
+---
+
+<!doctype html>
+<html lang="en" class="antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={settings.site_name} href="/rss.xml" />
+    <SEOHead
+      title={pageTitle}
+      description={description || settings.tag_line}
+      image={image}
+      type={type}
+      siteName={settings.site_name}
+      publishedTime={publishedTime}
+    />
+    <style set:html={`:root{--site-primary:${settings.primary};--site-primary-foreground:${settings.primary_foreground}}`}></style>
+  </head>
+  <body class="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <Header siteName={settings.site_name} tagLine={settings.tag_line} />
+    <slot />
+    <Footer siteName={settings.site_name} />
+  </body>
+</html>

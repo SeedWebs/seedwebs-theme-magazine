@@ -1,0 +1,107 @@
+---
+import BlogLayout from '@/layouts/BlogLayout.astro'
+import ResponsiveImage from '@/components/ui/ResponsiveImage.astro'
+import FormattedDate from '@/components/ui/FormattedDate.astro'
+import CategoryBadge from '@/components/ui/CategoryBadge.astro'
+import PostBody from '@/components/blog/PostBody.astro'
+import { getAllPostSlugs, getPost, getPosts, getCategories, getTags } from '@/lib/api'
+import { tagUrl, readingTime } from '@/lib/utils'
+
+export async function getStaticPaths() {
+  const slugs = await getAllPostSlugs()
+  return slugs.map(slug => ({ params: { slug } }))
+}
+
+const post = await getPost(Astro.params.slug!)
+if (!post) return Astro.redirect('/404')
+
+const [{ posts: recentPosts }, categories, tags] = await Promise.all([
+  getPosts({ perPage: 5 }),
+  getCategories(),
+  getTags(),
+])
+
+const minutes = readingTime(post.body)
+---
+
+<BlogLayout
+  title={post.seo_title || post.title}
+  description={post.seo_description || undefined}
+  image={post.featured_image}
+  type="article"
+  publishedTime={post.created_at}
+  recentPosts={recentPosts}
+  categories={categories}
+  tags={tags}
+>
+  <article>
+    {/* Header */}
+    <header class="mb-8">
+      {/* Categories */}
+      {post.categories.length > 0 && (
+        <div class="mb-3 flex flex-wrap gap-2">
+          {post.categories.map(cat => (
+            <CategoryBadge category={cat} size="md" />
+          ))}
+        </div>
+      )}
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-gray-900 md:text-4xl dark:text-white">
+        {post.title}
+      </h1>
+
+      {/* Meta */}
+      <div class="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+        <FormattedDate date={post.created_at} />
+        <span>&middot;</span>
+        <span>{minutes} min read</span>
+      </div>
+    </header>
+
+    {/* Featured Image */}
+    {post.featured_image && (
+      <div class="mb-8 overflow-hidden rounded-xl">
+        <ResponsiveImage
+          src={post.featured_image}
+          srcMobile={post.featured_image_mobile}
+          alt={post.title}
+          class="w-full"
+          sizes="(max-width: 768px) 100vw, 768px"
+          loading="eager"
+        />
+      </div>
+    )}
+
+    {/* Body */}
+    <PostBody html={post.body} />
+
+    {/* Tags */}
+    {post.tags.length > 0 && (
+      <div class="mt-8 flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6 dark:border-gray-800">
+        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Tags:</span>
+        {post.tags.map(tag => (
+          <a
+            href={tagUrl(tag.slug)}
+            class="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-600 transition-colors hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400 dark:hover:border-primary"
+          >
+            #{tag.name}
+          </a>
+        ))}
+      </div>
+    )}
+  </article>
+
+  {/* JSON-LD Structured Data */}
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      image: post.featured_image || undefined,
+      datePublished: post.created_at,
+      dateModified: post.updated_at,
+      description: post.seo_description || undefined,
+    })}
+  />
+</BlogLayout>

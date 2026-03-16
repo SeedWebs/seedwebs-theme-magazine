@@ -1,0 +1,36 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Sidebar from '@/components/layout/Sidebar.astro'
+import type { Post, Category, Tag } from '@/lib/types'
+
+interface Props {
+  title?: string
+  description?: string
+  image?: string | null
+  type?: 'website' | 'article'
+  publishedTime?: string
+  recentPosts?: Post[]
+  categories?: Category[]
+  tags?: Tag[]
+}
+
+const { title, description, image, type, publishedTime, recentPosts, categories, tags } = Astro.props
+---
+
+<BaseLayout title={title} description={description} image={image} type={type} publishedTime={publishedTime}>
+  <main class="mx-auto max-w-6xl px-4 py-8 md:py-12">
+    <div class="grid gap-8 lg:grid-cols-[1fr_300px]">
+      <!-- Main content -->
+      <div>
+        <slot />
+      </div>
+
+      <!-- Sidebar -->
+      <div class="hidden lg:block">
+        <div class="sticky top-8">
+          <Sidebar recentPosts={recentPosts} categories={categories} tags={tags} />
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

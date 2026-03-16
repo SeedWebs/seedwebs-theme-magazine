@@ -1,0 +1,55 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro'
+import FeaturedHero from '@/components/blog/FeaturedHero.astro'
+import PostGrid from '@/components/blog/PostGrid.astro'
+import CategoryGrid from '@/components/blog/CategoryGrid.astro'
+import { getPosts, getCategories } from '@/lib/api'
+
+const { posts } = await getPosts({ perPage: 13 })
+const categories = await getCategories()
+
+const featuredPost = posts[0]
+const secondaryPosts = posts.slice(1, 5)
+const latestPosts = posts.slice(5, 11)
+---
+
+<PageLayout>
+  <div class="mx-auto max-w-6xl px-4 py-8 md:py-12">
+    {/* Featured Hero */}
+    {featuredPost && (
+      <section class="mb-10">
+        <FeaturedHero post={featuredPost} />
+      </section>
+    )}
+
+    {/* Secondary Posts (2-col) */}
+    {secondaryPosts.length > 0 && (
+      <section class="mb-12">
+        <PostGrid posts={secondaryPosts} columns={2} />
+      </section>
+    )}
+
+    {/* Categories */}
+    {categories.length > 0 && (
+      <section class="mb-12">
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Categories</h2>
+        </div>
+        <CategoryGrid categories={categories} />
+      </section>
+    )}
+
+    {/* Latest Posts (3-col) */}
+    {latestPosts.length > 0 && (
+      <section class="mb-12">
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">Latest Posts</h2>
+          <a href="/post" class="text-sm font-medium text-primary hover:underline">
+            View all &rarr;
+          </a>
+        </div>
+        <PostGrid posts={latestPosts} />
+      </section>
+    )}
+  </div>
+</PageLayout>

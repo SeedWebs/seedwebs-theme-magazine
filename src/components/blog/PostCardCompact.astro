@@ -1,0 +1,38 @@
+---
+import FormattedDate from '@/components/ui/FormattedDate.astro'
+import type { Post } from '@/lib/types'
+import { postUrl } from '@/lib/utils'
+
+interface Props {
+  post: Post
+}
+
+const { post } = Astro.props
+const url = postUrl(post.slug)
+---
+
+<article class="group flex gap-3">
+  {/* Thumbnail */}
+  <a href={url} class="shrink-0">
+    {post.featured_image ? (
+      <img
+        src={post.featured_image_mobile || post.featured_image}
+        alt={post.title}
+        class="h-16 w-16 rounded-lg object-cover"
+        loading="lazy"
+      />
+    ) : (
+      <div class="h-16 w-16 rounded-lg bg-gray-100 dark:bg-gray-800" />
+    )}
+  </a>
+
+  {/* Text */}
+  <div class="min-w-0">
+    <h4 class="line-clamp-2 text-sm font-medium leading-tight">
+      <a href={url} class="text-gray-900 hover:text-primary dark:text-white dark:hover:text-primary">
+        {post.title}
+      </a>
+    </h4>
+    <FormattedDate date={post.created_at} class="mt-1 text-xs text-gray-500 dark:text-gray-400" />
+  </div>
+</article>

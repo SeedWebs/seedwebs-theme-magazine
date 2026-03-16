@@ -1,0 +1,83 @@
+---
+interface Props {
+  currentPage: number
+  totalPages: number
+  basePath: string
+}
+
+const { currentPage, totalPages, basePath } = Astro.props
+
+// Generate page numbers to show
+function getPageNumbers(current: number, total: number): (number | '...')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+
+  const pages: (number | '...')[] = [1]
+
+  if (current > 3) pages.push('...')
+
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+
+  for (let i = start; i <= end; i++) pages.push(i)
+
+  if (current < total - 2) pages.push('...')
+
+  pages.push(total)
+  return pages
+}
+
+const pages = getPageNumbers(currentPage, totalPages)
+
+function pageUrl(page: number): string {
+  if (page === 1) return basePath
+  return `${basePath}/${page}`
+}
+---
+
+{totalPages > 1 && (
+  <nav class="mt-8 flex items-center justify-center gap-1" aria-label="Pagination">
+    {/* Previous */}
+    {currentPage > 1 ? (
+      <a
+        href={pageUrl(currentPage - 1)}
+        class="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+        aria-label="Previous page"
+      >
+        &larr; Prev
+      </a>
+    ) : (
+      <span class="rounded-lg px-3 py-2 text-sm text-gray-300 dark:text-gray-600">&larr; Prev</span>
+    )}
+
+    {/* Page numbers */}
+    {pages.map(p =>
+      p === '...' ? (
+        <span class="px-2 text-gray-400">...</span>
+      ) : p === currentPage ? (
+        <span class="rounded-lg bg-primary px-3 py-2 text-sm font-medium text-primary-fg">
+          {p}
+        </span>
+      ) : (
+        <a
+          href={pageUrl(p)}
+          class="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+        >
+          {p}
+        </a>
+      )
+    )}
+
+    {/* Next */}
+    {currentPage < totalPages ? (
+      <a
+        href={pageUrl(currentPage + 1)}
+        class="rounded-lg px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+        aria-label="Next page"
+      >
+        Next &rarr;
+      </a>
+    ) : (
+      <span class="rounded-lg px-3 py-2 text-sm text-gray-300 dark:text-gray-600">Next &rarr;</span>
+    )}
+  </nav>
+)}

@@ -1,0 +1,51 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --color-primary: var(--site-primary, #3d3d5c);
+  --color-primary-fg: var(--site-primary-foreground, #fafafa);
+}
+
+/* Prose overrides for post body */
+.prose {
+  --tw-prose-links: var(--site-primary, #3d3d5c);
+}
+.prose img {
+  border-radius: 0.5rem;
+}
+.prose a {
+  text-decoration-color: color-mix(in srgb, var(--site-primary, #3d3d5c), transparent 60%);
+  text-underline-offset: 2px;
+}
+.prose a:hover {
+  text-decoration-color: var(--site-primary, #3d3d5c);
+}
+
+/* Dark mode prose */
+.dark .prose {
+  --tw-prose-body: #d1d5db;
+  --tw-prose-headings: #f3f4f6;
+  --tw-prose-links: color-mix(in srgb, var(--site-primary, #3d3d5c), white 30%);
+  --tw-prose-bold: #f3f4f6;
+  --tw-prose-counters: #9ca3af;
+  --tw-prose-bullets: #6b7280;
+  --tw-prose-hr: #374151;
+  --tw-prose-quotes: #d1d5db;
+  --tw-prose-quote-borders: #374151;
+  --tw-prose-captions: #9ca3af;
+  --tw-prose-code: #f3f4f6;
+  --tw-prose-pre-code: #d1d5db;
+  --tw-prose-pre-bg: #1f2937;
+  --tw-prose-th-borders: #4b5563;
+  --tw-prose-td-borders: #374151;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark mode base */
+.dark {
+  color-scheme: dark;
+}

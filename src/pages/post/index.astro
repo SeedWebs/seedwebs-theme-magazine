@@ -1,0 +1,24 @@
+---
+import BlogLayout from '@/layouts/BlogLayout.astro'
+import PostGrid from '@/components/blog/PostGrid.astro'
+import Pagination from '@/components/layout/Pagination.astro'
+import { getPosts, getCategories, getTags } from '@/lib/api'
+
+const { posts, meta } = await getPosts({ page: 1 })
+const [categories, tags] = await Promise.all([getCategories(), getTags()])
+
+// Recent posts for sidebar
+const recentPosts = posts.slice(0, 5)
+---
+
+<BlogLayout
+  title="Blog"
+  description="All blog posts"
+  recentPosts={recentPosts}
+  categories={categories}
+  tags={tags}
+>
+  <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Blog</h1>
+  <PostGrid posts={posts} />
+  <Pagination currentPage={1} totalPages={meta.total_pages} basePath="/post" />
+</BlogLayout>

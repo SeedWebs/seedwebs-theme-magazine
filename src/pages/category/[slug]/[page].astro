@@ -1,0 +1,43 @@
+---
+import BlogLayout from '@/layouts/BlogLayout.astro'
+import PostGrid from '@/components/blog/PostGrid.astro'
+import Pagination from '@/components/layout/Pagination.astro'
+import { getPosts, getCategories, getTags } from '@/lib/api'
+
+export async function getStaticPaths() {
+  const categories = await getCategories()
+  const paths = []
+
+  for (const cat of categories) {
+    const { meta } = await getPosts({ page: 1, category: cat.slug })
+    for (let i = 2; i <= meta.total_pages; i++) {
+      paths.push({
+        params: { slug: cat.slug, page: String(i) },
+        props: { category: cat },
+      })
+    }
+  }
+
+  return paths
+}
+
+const { category } = Astro.props
+const page = parseInt(Astro.params.page!)
+const { posts, meta } = await getPosts({ page, category: category.slug })
+const [categories, tags] = await Promise.all([getCategories(), getTags()])
+const recentPosts = posts.slice(0, 5)
+---
+
+<BlogLayout
+  title={`${category.name} — Page ${page}`}
+  recentPosts={recentPosts}
+  categories={categories}
+  tags={tags}
+>
+  <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">
+    Category: <span class="text-primary">{category.name}</span>
+    <span class="text-gray-400 dark:text-gray-500"> — Page {page}</span>
+  </h1>
+  <PostGrid posts={posts} />
+  <Pagination currentPage={page} totalPages={meta.total_pages} basePath={`/category/${category.slug}`} />
+</BlogLayout>

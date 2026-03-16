@@ -1,0 +1,32 @@
+---
+interface Props {
+  src: string | null
+  srcMobile?: string | null
+  alt: string
+  class?: string
+  sizes?: string
+  loading?: 'lazy' | 'eager'
+}
+
+const {
+  src,
+  srcMobile,
+  alt,
+  class: className = '',
+  sizes = '(max-width: 768px) 100vw, 50vw',
+  loading = 'lazy',
+} = Astro.props
+
+const srcSet = srcMobile ? `${srcMobile} 800w, ${src} 1600w` : undefined
+---
+
+{src && (
+  <img
+    src={src}
+    srcset={srcSet}
+    sizes={srcSet ? sizes : undefined}
+    alt={alt}
+    class={className}
+    loading={loading}
+  />
+)}

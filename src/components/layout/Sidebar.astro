@@ -1,0 +1,63 @@
+---
+import PostCardCompact from '@/components/blog/PostCardCompact.astro'
+import CategoryBadge from '@/components/ui/CategoryBadge.astro'
+import type { Post, Category, Tag } from '@/lib/types'
+import { tagUrl } from '@/lib/utils'
+
+interface Props {
+  recentPosts?: Post[]
+  categories?: Category[]
+  tags?: Tag[]
+}
+
+const { recentPosts = [], categories = [], tags = [] } = Astro.props
+---
+
+<aside class="space-y-8">
+  <!-- Recent Posts -->
+  {recentPosts.length > 0 && (
+    <div>
+      <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        Recent Posts
+      </h3>
+      <div class="space-y-4">
+        {recentPosts.slice(0, 5).map(post => (
+          <PostCardCompact post={post} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Categories -->
+  {categories.length > 0 && (
+    <div>
+      <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        Categories
+      </h3>
+      <div class="flex flex-wrap gap-2">
+        {categories.map(cat => (
+          <CategoryBadge category={cat} />
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- Tags -->
+  {tags.length > 0 && (
+    <div>
+      <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        Tags
+      </h3>
+      <div class="flex flex-wrap gap-2">
+        {tags.map(tag => (
+          <a
+            href={tagUrl(tag.slug)}
+            class="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-600 transition-colors hover:border-primary hover:text-primary dark:border-gray-700 dark:text-gray-400 dark:hover:border-primary dark:hover:text-primary"
+          >
+            #{tag.name}
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
+</aside>
