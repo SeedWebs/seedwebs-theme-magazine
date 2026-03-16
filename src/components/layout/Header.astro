@@ -1,11 +1,15 @@
 ---
+import type { PageItem } from '@/lib/types'
+
 interface Props {
   siteName: string
   tagLine: string
+  pages?: PageItem[]
 }
 
-const { siteName, tagLine } = Astro.props
+const { siteName, tagLine, pages = [] } = Astro.props
 const currentPath = Astro.url.pathname
+const navPages = pages.filter(p => p.slug !== 'home')
 ---
 
 <header class="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
@@ -37,6 +41,17 @@ const currentPath = Astro.url.pathname
       >
         Blog
       </a>
+      {navPages.map(page => (
+        <a
+          href={`/${page.slug}`}
+          class:list={[
+            'text-sm font-medium transition-colors hover:text-primary',
+            currentPath === `/${page.slug}` ? 'text-primary' : 'text-gray-600 dark:text-gray-400',
+          ]}
+        >
+          {page.title}
+        </a>
+      ))}
       <a
         href="/search"
         class="text-sm font-medium text-gray-600 transition-colors hover:text-primary dark:text-gray-400"
@@ -78,6 +93,9 @@ const currentPath = Astro.url.pathname
     <nav class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3">
       <a href="/" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">Home</a>
       <a href="/post" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">Blog</a>
+      {navPages.map(page => (
+        <a href={`/${page.slug}`} class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">{page.title}</a>
+      ))}
       <a href="/search" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">Search</a>
     </nav>
   </div>

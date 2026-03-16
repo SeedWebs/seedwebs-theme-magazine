@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: var(--site-primary, #3d3d5c);
   --color-primary-fg: var(--site-primary-foreground, #fafafa);

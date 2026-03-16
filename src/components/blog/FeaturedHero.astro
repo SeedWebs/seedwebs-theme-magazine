@@ -18,6 +18,8 @@ const desc = post.seo_description || excerpt(post.body, 200)
   {post.featured_image ? (
     <img
       src={post.featured_image}
+      srcset={post.featured_image_mobile ? `${post.featured_image_mobile} 800w, ${post.featured_image} 1600w` : undefined}
+      sizes={post.featured_image_mobile ? '100vw' : undefined}
       alt={post.title}
       class="aspect-[21/9] w-full object-cover transition-transform duration-500 group-hover:scale-105"
       loading="eager"

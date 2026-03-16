@@ -13,7 +13,7 @@ const { categories } = Astro.props
   {categories.map(cat => (
     <a
       href={categoryUrl(cat.slug)}
-      class="group rounded-xl border border-gray-200 bg-white px-4 py-4 text-center transition-all hover:border-primary hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-primary"
+      class="group rounded-md shadow-sm bg-white px-4 py-4 text-center transition-all hover:shadow-lg dark:bg-gray-900"
     >
       <span class="text-sm font-semibold text-gray-900 group-hover:text-primary dark:text-white dark:group-hover:text-primary">
         {cat.name}

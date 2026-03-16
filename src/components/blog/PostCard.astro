@@ -14,7 +14,7 @@ const url = postUrl(post.slug)
 const desc = post.seo_description || excerpt(post.body)
 ---
 
-<article class="group overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow hover:shadow-lg dark:border-gray-800 dark:bg-gray-900">
+<article class="group overflow-hidden rounded-md shadow-sm bg-white transition-shadow hover:shadow-lg dark:bg-gray-900">
   {/* Image */}
   <a href={url} class="block overflow-hidden">
     {post.featured_image ? (

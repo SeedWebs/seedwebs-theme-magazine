@@ -2,8 +2,8 @@
 import SEOHead from '@/components/seo/SEOHead.astro'
 import Header from '@/components/layout/Header.astro'
 import Footer from '@/components/layout/Footer.astro'
-import { getSettings } from '@/lib/api'
-import type { SiteSettings } from '@/lib/types'
+import { getSettings, getPages } from '@/lib/api'
+import type { SiteSettings, PageItem } from '@/lib/types'
 import '@/styles/global.css'
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   publishedTime?: string
 }
 
-const settings = await getSettings()
+const [settings, pages] = await Promise.all([getSettings(), getPages()])
 const { title, description, image, type, publishedTime } = Astro.props
 const pageTitle = title ? `${title} — ${settings.site_name}` : settings.site_name
 ---
@@ -37,8 +37,8 @@ const pageTitle = title ? `${title} — ${settings.site_name}` : settings.site_n
     />
     <style set:html={`:root{--site-primary:${settings.primary};--site-primary-foreground:${settings.primary_foreground}}`}></style>
   </head>
-  <body class="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-    <Header siteName={settings.site_name} tagLine={settings.tag_line} />
+  <body class="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <Header siteName={settings.site_name} tagLine={settings.tag_line} pages={pages} />
     <slot />
     <Footer siteName={settings.site_name} />
   </body>
