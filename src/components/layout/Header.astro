@@ -8,7 +8,7 @@ interface Props {
 }
 
 const { siteName, tagLine, pages = [] } = Astro.props
-const currentPath = Astro.url.pathname
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/'
 const navPages = pages.filter(p => p.slug !== 'home')
 ---
 
